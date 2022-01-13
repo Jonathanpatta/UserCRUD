@@ -16,14 +16,18 @@ type User struct {
 	UUID         string
 }
 
+const EmptyEmailError string = "email address cannot be empty"
+const EmptyFirstNameError string = "first name cannot be empty"
+const UserDoesNotExistError string = "user does not exist"
+
 var UserStore []User
 
 func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob string) (user User, err error) {
 	if emailAddr == "" {
-		err = errors.New("email address cannot be empty")
+		err = errors.New(EmptyEmailError)
 		return user, err
 	} else if firstName == "" {
-		err = errors.New("first name cannot be empty")
+		err = errors.New(EmptyFirstNameError)
 		return user, err
 	}
 	id, idCreationError := uuid.NewRandom()
@@ -48,17 +52,17 @@ func GetUser(id string) (user User, err error) {
 			return val, err
 		}
 	}
-	return user, errors.New("no user with that id exists")
+	return user, errors.New(UserDoesNotExistError)
 }
 
 func UpdateUser(id string, updatedUser User) (user User, err error) {
 	for i, val := range UserStore {
 		if val.UUID == id {
 			if updatedUser.EmailAddress == "" {
-				err = errors.New("email address cannot be empty")
+				err = errors.New(EmptyEmailError)
 				return user, err
 			} else if updatedUser.FirstName == "" {
-				err = errors.New("first name cannot be empty")
+				err = errors.New(EmptyFirstNameError)
 				return user, err
 			}
 			updatedUser.UUID = id
@@ -66,11 +70,12 @@ func UpdateUser(id string, updatedUser User) (user User, err error) {
 			return updatedUser, err
 		}
 	}
-	return user, errors.New("no user with that id exists")
+	//asdfsdf
+	return user, errors.New(UserDoesNotExistError)
 }
 
-func ListUsers() []User {
-	return UserStore
+func ListUsers() (user []User, err error) {
+	return UserStore, err
 }
 
 func DeleteUser(id string) (err error) {
@@ -78,9 +83,10 @@ func DeleteUser(id string) (err error) {
 		if val.UUID == id {
 			UserStore[i] = UserStore[len(UserStore)-1]
 			UserStore = UserStore[:len(UserStore)-1]
+			return err
 		}
 	}
-	return err
+	return errors.New(UserDoesNotExistError)
 }
 
 func main() {
@@ -97,6 +103,8 @@ func main() {
 
 	returnedUser, _ = GetUser(newUser.UUID)
 	fmt.Println(returnedUser)
+
+	DeleteUser(newUser.UUID)
 
 	fmt.Println(ListUsers())
 
