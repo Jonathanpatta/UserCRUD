@@ -19,6 +19,31 @@ func TestUserCreate(t *testing.T) {
 	}
 }
 
+func TestUpdateUser(t *testing.T) {
+	user, createError := CreateUser("asdfasdf", "asdfasdfsadf", "asdfasdfasdf", "asdfasdf", "")
+	if createError != nil {
+		t.Errorf("User Creation error")
+	}
+	userWithoutEmail := User{}
+	userWithoutName := User{EmailAddress: "asdasdfasdf"}
+	normalUser := User{EmailAddress: "asdfasdf", FirstName: "sadfasdf", PhoneNumber: "asdfoasdfjoasdf"}
+
+	_, err := UpdateUser(user.UUID, userWithoutEmail)
+
+	if err.Error() != EmptyEmailError {
+		t.Errorf("")
+	}
+	_, err = UpdateUser(user.UUID, userWithoutName)
+	if err.Error() != EmptyFirstNameError {
+		t.Errorf("")
+	}
+
+	_, err = UpdateUser(user.UUID, normalUser)
+	if err != nil {
+		t.Errorf("Error with updating function")
+	}
+}
+
 func TestGetUser(t *testing.T) {
 	user, createError := CreateUser("asdfsadf", "asdfasdf", "asdf", "0", "")
 	if createError != nil {
