@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestUserCreate1(t *testing.T) {
+func TestUserCreate(t *testing.T) {
 	_, err := CreateUser("", "", "", "", "")
 	if err.Error() != EmptyEmailError {
 		t.Errorf("")
@@ -19,7 +19,7 @@ func TestUserCreate1(t *testing.T) {
 	}
 }
 
-func TestUpdateUser1(t *testing.T) {
+func TestUpdateUser(t *testing.T) {
 	user, createError := CreateUser("asdfasdf", "asdfasdfsadf", "asdfasdfasdf", "asdfasdf", "")
 	if createError != nil {
 		t.Errorf("User Creation error")
@@ -44,11 +44,7 @@ func TestUpdateUser1(t *testing.T) {
 	}
 }
 
-<<<<<<< HEAD
-func TestGetUser1(t *testing.T) {
-=======
 func TestGetUser(t *testing.T) {
->>>>>>> 76376a2f6ce54106062dacfc0298baee29a397c2
 	user, createError := CreateUser("asdfsadf", "asdfasdf", "asdf", "0", "")
 	if createError != nil {
 		t.Errorf("User Creation error")
@@ -67,7 +63,7 @@ func TestListUser(t *testing.T) {
 	}
 }
 
-func TestDeleteUser1(t *testing.T) {
+func TestDeleteUser(t *testing.T) {
 	err := DeleteUser("asdfsadf")
 	if err.Error() != UserDoesNotExistError {
 		t.Errorf("Not failing when providing bad id")
