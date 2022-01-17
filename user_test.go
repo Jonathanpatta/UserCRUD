@@ -44,7 +44,11 @@ func TestUpdateUser1(t *testing.T) {
 	}
 }
 
+<<<<<<< HEAD
 func TestGetUser1(t *testing.T) {
+=======
+func TestGetUser(t *testing.T) {
+>>>>>>> 76376a2f6ce54106062dacfc0298baee29a397c2
 	user, createError := CreateUser("asdfsadf", "asdfasdf", "asdf", "0", "")
 	if createError != nil {
 		t.Errorf("User Creation error")
