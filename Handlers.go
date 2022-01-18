@@ -67,3 +67,27 @@ func ListUsersHandler() func(rw http.ResponseWriter, r *http.Request) {
 		encoder.Encode(users)
 	}
 }
+
+func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		rw.Header().Set("Content-Type", "application/json")
+		r.ParseForm()
+		email := r.Form.Get("email")
+		firstName := r.Form.Get("firstname")
+		lastName := r.Form.Get("lastname")
+		phoneNumber := r.Form.Get("phonenumber")
+		dateOfBirth := r.Form.Get("dob")
+
+		id := r.Form.Get("id")
+
+		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: dateOfBirth})
+		if err != nil {
+			fmt.Fprintf(rw, err.Error())
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		encoder := json.NewEncoder(rw)
+		encoder.Encode(user)
+	}
+}
