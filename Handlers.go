@@ -24,7 +24,7 @@ func CreateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 
 		user, err := CreateUser(email, firstName, lastName, phoneNumber, dateOfBirth)
 		if err != nil {
-			fmt.Fprintf(rw, err.Error())
+			fmt.Fprint(rw, err.Error())
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -41,7 +41,7 @@ func GetUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[string
 
 		user, err := GetUser(id)
 		if err != nil {
-			fmt.Fprintf(rw, err.Error())
+			fmt.Fprint(rw, err.Error())
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -56,7 +56,7 @@ func ListUsersHandler() func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header().Set("Content-Type", "application/json")
 		users, err := ListUsers()
 		if err != nil {
-			fmt.Fprintf(rw, err.Error())
+			fmt.Fprint(rw, err.Error())
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -80,7 +80,7 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[str
 
 		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: dateOfBirth})
 		if err != nil {
-			fmt.Fprintf(rw, err.Error())
+			fmt.Fprint(rw, err.Error())
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -98,7 +98,7 @@ func DeleteUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[str
 
 		err := DeleteUser(id)
 		if err != nil {
-			fmt.Fprintf(rw, err.Error())
+			fmt.Fprint(rw, err.Error())
 			rw.WriteHeader(http.StatusInternalServerError)
 			return
 		}

@@ -74,10 +74,6 @@ func (r *Router) RegisterHandler(endpoint string, method string, fn func(http.Re
 	r.StaticHandlers = append(r.StaticHandlers, &newHandler, &newHandlerWithSlash)
 }
 
-//path = ["base url","dynamicdata"]
-
-//examplePath = ["/user","id"]
-
 func (r *Router) RegisterDynamicHandler(path string, method string, fn func(http.ResponseWriter, *http.Request, map[string]string)) {
 	newHandler := DynamicHandler{DynamicPath: path, Method: method, HandlerFunction: fn}
 
