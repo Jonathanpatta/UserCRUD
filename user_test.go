@@ -24,7 +24,7 @@ func TestUpdateUser(t *testing.T) {
 	if createError != nil {
 		t.Errorf("User Creation error")
 	}
-	userWithoutEmail := User{}
+	userWithoutEmail := new(User)
 	userWithoutName := User{EmailAddress: "asdasdfasdf"}
 	normalUser := User{EmailAddress: "asdfasdf", FirstName: "sadfasdf", PhoneNumber: "asdfoasdfjoasdf"}
 
@@ -33,12 +33,12 @@ func TestUpdateUser(t *testing.T) {
 	if err.Error() != EmptyEmailError {
 		t.Errorf("")
 	}
-	_, err = UpdateUser(user.UUID, userWithoutName)
+	_, err = UpdateUser(user.UUID, &userWithoutName)
 	if err.Error() != EmptyFirstNameError {
 		t.Errorf("")
 	}
 
-	_, err = UpdateUser(user.UUID, normalUser)
+	_, err = UpdateUser(user.UUID, &normalUser)
 	if err != nil {
 		t.Errorf("Error with updating function")
 	}
@@ -50,7 +50,7 @@ func TestGetUser(t *testing.T) {
 		t.Errorf("User Creation error")
 	}
 	id := user.UUID
-	user, err := GetUser(id)
+	_, err := GetUser(id)
 	if err != nil {
 		t.Errorf(err.Error())
 	}

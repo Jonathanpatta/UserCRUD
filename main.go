@@ -20,9 +20,9 @@ const EmptyEmailError string = "email address cannot be empty"
 const EmptyFirstNameError string = "first name cannot be empty"
 const UserDoesNotExistError string = "user does not exist"
 
-var UserStore []User
+var UserStore []*User
 
-func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob string) (user User, err error) {
+func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob string) (user *User, err error) {
 	if emailAddr == "" {
 		err = errors.New(EmptyEmailError)
 		return user, err
@@ -34,19 +34,20 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 	if idCreationError != nil {
 		return user, idCreationError
 	}
-	user.UUID = id.String()
-	user.EmailAddress = emailAddr
-	user.FirstName = firstName
-	user.LastName = lastName
-	user.PhoneNumber = phoneNumber
-	user.DOB = dob
+	myuser := User{}
+	myuser.UUID = id.String()
+	myuser.EmailAddress = emailAddr
+	myuser.FirstName = firstName
+	myuser.LastName = lastName
+	myuser.PhoneNumber = phoneNumber
+	myuser.DOB = dob
 
-	UserStore = append(UserStore, user)
+	UserStore = append(UserStore, &myuser)
 
-	return user, err
+	return &myuser, err
 }
 
-func GetUser(id string) (user User, err error) {
+func GetUser(id string) (user *User, err error) {
 	for _, val := range UserStore {
 		if val.UUID == id {
 			return val, err
@@ -55,7 +56,8 @@ func GetUser(id string) (user User, err error) {
 	return user, errors.New(UserDoesNotExistError)
 }
 
-func UpdateUser(id string, updatedUser User) (user User, err error) {
+func UpdateUser(id string, updatedUser *User) (user *User, err error) {
+
 	for i, val := range UserStore {
 		if val.UUID == id {
 			if updatedUser.EmailAddress == "" {
@@ -74,7 +76,7 @@ func UpdateUser(id string, updatedUser User) (user User, err error) {
 	return user, errors.New(UserDoesNotExistError)
 }
 
-func ListUsers() (user []User, err error) {
+func ListUsers() (user []*User, err error) {
 	return UserStore, err
 }
 
@@ -99,7 +101,7 @@ func main() {
 	CreateUser("asfasdfsadf", "asdfasdf", "asdfsad", "asdf", "asdf")
 	CreateUser("sadf", "sadfasdf", "adfsasd", "asdfsadf", "sadfsadf")
 
-	UpdateUser(newUser.UUID, User{FirstName: "biscuit", EmailAddress: "b@c.com"})
+	UpdateUser(newUser.UUID, &User{FirstName: "biscuit", EmailAddress: "b@c.com"})
 
 	returnedUser, _ = GetUser(newUser.UUID)
 	fmt.Println(returnedUser)
