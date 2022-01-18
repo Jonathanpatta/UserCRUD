@@ -6,11 +6,11 @@ import (
 
 func TestUserCreate(t *testing.T) {
 	_, err := CreateUser("", "", "", "", "")
-	if err.Error() != EmptyEmailError {
+	if err != errEmptyEmailError {
 		t.Errorf("")
 	}
 	_, err = CreateUser("asdfsdfsdf", "", "", "", "")
-	if err.Error() != EmptyFirstNameError {
+	if err != errEmptyFirstNameError {
 		t.Errorf("")
 	}
 	_, err = CreateUser("asdfsdfsdf", "asdfasdf", "", "", "")
@@ -30,11 +30,11 @@ func TestUpdateUser(t *testing.T) {
 
 	_, err := UpdateUser(user.UUID, userWithoutEmail)
 
-	if err.Error() != EmptyEmailError {
+	if err != errEmptyEmailError {
 		t.Errorf("")
 	}
 	_, err = UpdateUser(user.UUID, &userWithoutName)
-	if err.Error() != EmptyFirstNameError {
+	if err != errEmptyFirstNameError {
 		t.Errorf("")
 	}
 
@@ -65,7 +65,7 @@ func TestListUser(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	err := DeleteUser("asdfsadf")
-	if err.Error() != UserDoesNotExistError {
+	if err != errUserDoesNotExistError {
 		t.Errorf("Not failing when providing bad id")
 	}
 	user, createError := CreateUser("asdfs", "asdf", "asdf", "", "")
