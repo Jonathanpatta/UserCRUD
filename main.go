@@ -5,20 +5,17 @@ import (
 	"net/http"
 )
 
-// handles both cases where the url ends with "/" and the case where it does'nt
-func HandleBoth(url string, handler func(http.ResponseWriter, *http.Request)) {
-	http.HandleFunc(url, handler)
-	http.HandleFunc(url+"/", handler)
-}
-
 func main() {
 
-	HandleBoth("/ping", PingHandler())
-	HandleBoth("/user", CreateUserHandler())
-	HandleBoth("/getuser", GetUserHandler())
-	HandleBoth("/users/list", ListUsersHandler())
-	HandleBoth("/updateuser", UpdateUserHandler())
-	HandleBoth("/deleteuser", DeleteUserHandler())
+	router := NewRouter()
+	router.RegisterHandler("/ping", "GET", PingHandler())
+	router.RegisterHandler("/user", "POST", CreateUserHandler())
+	router.RegisterHandler("/getuser", "POST", GetUserHandler())
+	router.RegisterHandler("/users/list", "GET", ListUsersHandler())
+	router.RegisterHandler("/updateuser", "POST", UpdateUserHandler())
+	router.RegisterHandler("/deleteuser", "POST", DeleteUserHandler())
+
+	router.RegisterHandler("/test", "GET", func(rw http.ResponseWriter, r *http.Request) { fmt.Fprintf(rw, "test endpoint") })
 
 	fmt.Printf("listening on port 8080")
 	http.ListenAndServe(":8080", nil)
