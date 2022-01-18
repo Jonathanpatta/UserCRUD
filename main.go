@@ -18,6 +18,7 @@ func main() {
 	HandleBoth("/getuser", GetUserHandler())
 	HandleBoth("/users/list", ListUsersHandler())
 	HandleBoth("/updateuser", UpdateUserHandler())
+	HandleBoth("/deleteuser", DeleteUserHandler())
 
 	fmt.Printf("listening on port 8080")
 	http.ListenAndServe(":8080", nil)

@@ -91,3 +91,20 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 		encoder.Encode(user)
 	}
 }
+
+func DeleteUserHandler() func(rw http.ResponseWriter, r *http.Request) {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		rw.Header().Set("Content-Type", "application/json")
+		r.ParseForm()
+
+		id := r.Form.Get("id")
+
+		err := DeleteUser(id)
+		if err != nil {
+			fmt.Fprintf(rw, err.Error())
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		fmt.Fprintf(rw, "Deletion Successful")
+	}
+}
