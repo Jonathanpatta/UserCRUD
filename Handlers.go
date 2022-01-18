@@ -34,12 +34,10 @@ func CreateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetUserHandler() func(rw http.ResponseWriter, r *http.Request) {
-	return func(rw http.ResponseWriter, r *http.Request) {
+func GetUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
+	return func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
 		rw.Header().Set("Content-Type", "application/json")
-
-		r.ParseForm()
-		id := r.Form.Get("id")
+		id := m["id"]
 
 		user, err := GetUser(id)
 		if err != nil {
@@ -68,8 +66,8 @@ func ListUsersHandler() func(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
-	return func(rw http.ResponseWriter, r *http.Request) {
+func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
+	return func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
 		rw.Header().Set("Content-Type", "application/json")
 		r.ParseForm()
 		email := r.Form.Get("email")
@@ -78,7 +76,7 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 		phoneNumber := r.Form.Get("phonenumber")
 		dateOfBirth := r.Form.Get("dob")
 
-		id := r.Form.Get("id")
+		id := m["id"]
 
 		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: dateOfBirth})
 		if err != nil {
@@ -92,12 +90,11 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func DeleteUserHandler() func(rw http.ResponseWriter, r *http.Request) {
-	return func(rw http.ResponseWriter, r *http.Request) {
+func DeleteUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
+	return func(rw http.ResponseWriter, r *http.Request, m map[string]string) {
 		rw.Header().Set("Content-Type", "application/json")
-		r.ParseForm()
 
-		id := r.Form.Get("id")
+		id := m["id"]
 
 		err := DeleteUser(id)
 		if err != nil {
