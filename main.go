@@ -15,6 +15,8 @@ func main() {
 
 	HandleBoth("/ping", PingHandler())
 	HandleBoth("/user", CreateUserHandler())
+	HandleBoth("/getuser", GetUserHandler())
+	HandleBoth("/users/list", ListUsersHandler())
 
 	fmt.Printf("listening on port 8080")
 	http.ListenAndServe(":8080", nil)
