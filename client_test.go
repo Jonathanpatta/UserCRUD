@@ -216,3 +216,17 @@ func TestClientDeleteUser(t *testing.T) {
 		t.Errorf("Error while Deleting User: " + bodyData)
 	}
 }
+
+func TestClientListUsers(t *testing.T) {
+	endPoint := BaseUrl + "/users/"
+
+	resp, err := http.Get(endPoint)
+	body, _ := ioutil.ReadAll(resp.Body)
+	bodyData := string(body)
+	if resp.StatusCode != 200 {
+		t.Errorf("Get User Error: " + bodyData)
+	}
+	if err != nil {
+		panic(err)
+	}
+}
