@@ -9,10 +9,10 @@ func main() {
 
 	router := NewRouter()
 	router.RegisterHandler("/ping", "GET", PingHandler())
-	router.RegisterHandler("/user", "POST", CreateUserHandler())
-	router.RegisterDynamicHandler("/user/{id}", "PUT", UpdateUserHandler())
-	router.RegisterDynamicHandler("/user/{id}", "GET", GetUserHandler())
-	router.RegisterDynamicHandler("/user/{id}", "DELETE", DeleteUserHandler())
+	router.RegisterHandler("/users", "POST", CreateUserHandler())
+	router.RegisterDynamicHandler("/users/{id}", "PUT", UpdateUserHandler())
+	router.RegisterDynamicHandler("/users/{id}", "GET", GetUserHandler())
+	router.RegisterDynamicHandler("/users/{id}", "DELETE", DeleteUserHandler())
 	router.RegisterHandler("/users", "GET", ListUsersHandler())
 
 	fmt.Printf("listening on port 8080")

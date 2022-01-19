@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -16,6 +17,10 @@ func CreateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header().Set("Content-Type", "application/json")
 		r.ParseForm()
+
+		bodydata, _ := ioutil.ReadAll(r.Body)
+		fmt.Println(string(bodydata))
+
 		email := r.Form.Get("email")
 		firstName := r.Form.Get("firstname")
 		lastName := r.Form.Get("lastname")
