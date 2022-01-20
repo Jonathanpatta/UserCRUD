@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -41,6 +42,31 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 
 	UserStore = append(UserStore, &myuser)
 
+	fields, values := GetFieldsAndValues(&myuser)
+
+	query := `INSERT INTO ` + UserTableName + fields + `VALUES` + values + ` returning "UUID";`
+
+	fmt.Println(query)
+	rows, err := db.Query(query)
+
+	fmt.Println(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var uuid string
+
+	for rows.Next() {
+		err = rows.Scan(&uuid)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("uuid", uuid)
+
 	return &myuser, err
 }
 
@@ -50,6 +76,7 @@ func GetUser(id string) (user *User, err error) {
 			return val, err
 		}
 	}
+
 	return user, errUserDoesNotExistError
 }
 

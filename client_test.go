@@ -69,7 +69,10 @@ func TestClientGetUser(t *testing.T) {
 
 	// text := `{"emailaddress":"jonathan.patta@gmail.com","firstname":"Jonathan","UUID":"04114121-313e-4839-ae9b-e41e61fba913"}`
 
-	reader := json.NewDecoder(resp.Body)
+	// reader1 := strings.NewReader(text)
+	bodyReader := strings.NewReader(bodyData)
+	fmt.Println(bodyReader)
+	reader := json.NewDecoder(bodyReader)
 	err = reader.Decode(&user2)
 
 	fmt.Println("user2: ", user2)

@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-
+	DBConnect()
 	router := NewRouter()
 	router.RegisterHandler("/ping", "GET", PingHandler())
 	router.RegisterHandler("/users", "POST", CreateUserHandler())
