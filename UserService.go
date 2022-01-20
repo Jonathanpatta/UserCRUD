@@ -7,12 +7,12 @@ import (
 )
 
 type User struct {
-	EmailAddress string `json:"emailaddress"`
-	FirstName    string `json:"firstname"`
-	LastName     string `json:"lastname"`
-	PhoneNumber  string `json:"phonenumber"`
-	DOB          string `json:"dob"`
-	UUID         string `json:"UUID"`
+	EmailAddress string `json:"emailaddress,omitempty"`
+	FirstName    string `json:"firstname,omitempty"`
+	LastName     string `json:"lastname,omitempty"`
+	PhoneNumber  string `json:"phonenumber,omitempty"`
+	DOB          string `json:"dob,omitempty"`
+	UUID         string `json:"UUID,omitempty"`
 }
 
 var errEmptyEmailError = errors.New("email address cannot be empty")

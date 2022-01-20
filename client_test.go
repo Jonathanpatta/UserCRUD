@@ -65,8 +65,15 @@ func TestClientGetUser(t *testing.T) {
 	}
 
 	var user User
+	var user2 User
 
-	// err = json.NewDecoder(resp.Body).Decode(&user)
+	// text := `{"emailaddress":"jonathan.patta@gmail.com","firstname":"Jonathan","UUID":"04114121-313e-4839-ae9b-e41e61fba913"}`
+
+	reader := json.NewDecoder(resp.Body)
+	err = reader.Decode(&user2)
+
+	fmt.Println("user2: ", user2)
+
 	err = json.Unmarshal(body, &user)
 
 	if err != nil {

@@ -15,6 +15,6 @@ func main() {
 	router.RegisterDynamicHandler("/users/{id}", "DELETE", DeleteUserHandler())
 	router.RegisterHandler("/users", "GET", ListUsersHandler())
 
-	fmt.Printf("listening on port 8080")
+	fmt.Println("listening on port 8080")
 	http.ListenAndServe(":8080", nil)
 }
