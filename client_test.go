@@ -58,24 +58,11 @@ func TestClientGetUser(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	bodyData := string(body)
 
-	fmt.Println(bodyData)
-
 	if resp.StatusCode != 200 {
 		t.Errorf("Error while creating user:" + bodyData)
 	}
 
 	var user User
-	var user2 User
-
-	// text := `{"emailaddress":"jonathan.patta@gmail.com","firstname":"Jonathan","UUID":"04114121-313e-4839-ae9b-e41e61fba913"}`
-
-	// reader1 := strings.NewReader(text)
-	bodyReader := strings.NewReader(bodyData)
-	fmt.Println(bodyReader)
-	reader := json.NewDecoder(bodyReader)
-	err = reader.Decode(&user2)
-
-	fmt.Println("user2: ", user2)
 
 	err = json.Unmarshal(body, &user)
 
@@ -118,27 +105,21 @@ func TestClientUpdateUser(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	bodyData := string(body)
 
-	// fmt.Println(bodyData)
-
 	if resp.StatusCode != 200 {
 		t.Errorf("Error while creating user:" + bodyData)
 	}
 
 	var user User
 
-	// err = json.NewDecoder(resp.Body).Decode(&user)
 	err = json.Unmarshal(body, &user)
 
 	if err != nil {
 		fmt.Println(err)
 		t.Error()
 	}
-	// fmt.Println(user)
 	id := user.UUID
 
 	endPoint = BaseUrl + "/users/" + id
-
-	// fmt.Println(endPoint)
 
 	data = url.Values{}
 	data.Set("email", user.EmailAddress)
@@ -186,8 +167,6 @@ func TestClientDeleteUser(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	bodyData := string(body)
 
-	// fmt.Println(bodyData)
-
 	if resp.StatusCode != 200 {
 		t.Errorf("Error while creating user:" + bodyData)
 	}
@@ -201,12 +180,9 @@ func TestClientDeleteUser(t *testing.T) {
 		fmt.Println(err)
 		t.Error()
 	}
-	// fmt.Println(user)
 	id := user.UUID
 
 	endPoint = BaseUrl + "/users/" + id
-
-	// fmt.Println(endPoint)
 
 	data = url.Values{}
 	payload = strings.NewReader(data.Encode())

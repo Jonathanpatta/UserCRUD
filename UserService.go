@@ -21,8 +21,6 @@ var errEmptyEmailError = errors.New("email address cannot be empty")
 var errEmptyFirstNameError = errors.New("first name cannot be empty")
 var errUserDoesNotExistError = errors.New("user does not exist")
 
-var UserStore []*User
-
 func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob string) (*User, error) {
 	if emailAddr == "" {
 		return nil, errEmptyEmailError
@@ -41,21 +39,18 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 	myuser.PhoneNumber = phoneNumber
 	myuser.DOB = dob
 
-	UserStore = append(UserStore, &myuser)
-
 	fields, values := GetFieldsAndValues(&myuser)
 
 	query := `INSERT INTO ` + UserTableName + fields + `VALUES` + values + ` returning *;`
 
-	fmt.Println(query)
-	rows, err := db.Query(query)
+	rows := db.QueryRow(query)
 
 	var user User
 	var lastName_ sql.NullString
 	var dateOfBirth sql.NullTime
 	var phoneNumber_ sql.NullString
 
-	err = rows.Scan(&user.UUID, &user.EmailAddress, &user.FirstName, &lastName, &dateOfBirth, &phoneNumber)
+	err := rows.Scan(&user.UUID, &user.EmailAddress, &user.FirstName, &lastName_, &dateOfBirth, &phoneNumber_)
 
 	if lastName_.Valid {
 		user.LastName = lastName_.String
@@ -79,15 +74,8 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 }
 
 func GetUser(id string) (*User, error) {
-	for _, val := range UserStore {
-		if val.UUID == id {
-			return val, nil
-		}
-	}
 
 	query := `SELECT * from ` + UserTableName + ` WHERE "UUID" = ` + `'` + id + `'`
-
-	fmt.Println(query)
 
 	result := db.QueryRow(query)
 
@@ -120,19 +108,6 @@ func GetUser(id string) (*User, error) {
 }
 
 func UpdateUser(id string, updatedUser *User) (*User, error) {
-
-	for i, val := range UserStore {
-		if val.UUID == id {
-			if updatedUser.EmailAddress == "" {
-				return nil, errEmptyEmailError
-			} else if updatedUser.FirstName == "" {
-				return nil, errEmptyFirstNameError
-			}
-			updatedUser.UUID = id
-			UserStore[i] = updatedUser
-			return updatedUser, nil
-		}
-	}
 
 	fields := ``
 
@@ -222,13 +197,6 @@ func ListUsers() ([]*User, error) {
 }
 
 func DeleteUser(id string) error {
-	for i, val := range UserStore {
-		if val.UUID == id {
-			UserStore[i] = UserStore[len(UserStore)-1]
-			UserStore = UserStore[:len(UserStore)-1]
-			return nil
-		}
-	}
 
 	query := `DELETE FROM ` + UserTableName + ` WHERE "UUID" = '` + id + `'`
 
