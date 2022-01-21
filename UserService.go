@@ -4,9 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"math/rand"
 	"strconv"
-
-	"github.com/google/uuid"
 )
 
 type User struct {
@@ -18,22 +17,30 @@ type User struct {
 	UUID         string `json:"UUID,omitempty"`
 }
 
-var errEmptyEmailError = errors.New("email address cannot be empty")
-var errEmptyFirstNameError = errors.New("first name cannot be empty")
-var errUserDoesNotExistError = errors.New("user does not exist")
+var ErrEmptyEmail = errors.New("email address cannot be empty")
+var ErrEmptyFirstName = errors.New("first name cannot be empty")
+var ErrUserDoesNotExist = errors.New("user does not exist")
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
 
 func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob string) (*User, error) {
 	if emailAddr == "" {
-		return nil, errEmptyEmailError
+		return nil, ErrEmptyEmail
 	} else if firstName == "" {
-		return nil, errEmptyFirstNameError
+		return nil, ErrEmptyFirstName
 	}
-	id, idCreationError := uuid.NewRandom()
-	if idCreationError != nil {
-		return nil, idCreationError
-	}
+	id := randSeq(36)
+
 	myuser := User{}
-	myuser.UUID = id.String()
+	myuser.UUID = id
 	myuser.EmailAddress = emailAddr
 	myuser.FirstName = firstName
 	myuser.LastName = lastName
@@ -113,7 +120,7 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errUserDoesNotExistError
+			return nil, ErrUserDoesNotExist
 		} else {
 			return nil, err
 		}
@@ -147,7 +154,7 @@ func GetUser(id string) (*User, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errUserDoesNotExistError
+			return nil, ErrUserDoesNotExist
 		} else {
 			return nil, err
 		}
@@ -159,9 +166,9 @@ func GetUser(id string) (*User, error) {
 func UpdateUser(id string, updatedUser *User) (*User, error) {
 
 	if updatedUser.EmailAddress == "" {
-		return nil, errEmptyEmailError
+		return nil, ErrEmptyEmail
 	} else if updatedUser.FirstName == "" {
-		return nil, errEmptyFirstNameError
+		return nil, ErrEmptyFirstName
 	}
 
 	fields := ``
@@ -204,7 +211,7 @@ func UpdateUser(id string, updatedUser *User) (*User, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errUserDoesNotExistError
+			return nil, ErrUserDoesNotExist
 		} else {
 			return nil, err
 		}

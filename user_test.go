@@ -7,11 +7,11 @@ import (
 func TestUserCreate(t *testing.T) {
 	DBConnect()
 	_, err := CreateUser("", "", "", "", "")
-	if err != errEmptyEmailError {
+	if err != ErrEmptyEmail {
 		t.Errorf("")
 	}
 	_, err = CreateUser("Test-firstname", "", "", "", "")
-	if err != errEmptyFirstNameError {
+	if err != ErrEmptyFirstName {
 		t.Errorf("")
 	}
 
