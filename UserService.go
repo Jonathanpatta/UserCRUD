@@ -70,6 +70,8 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errUserDoesNotExistError
+		} else {
+			return nil, err
 		}
 	}
 
@@ -109,28 +111,69 @@ func GetUser(id string) (*User, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errUserDoesNotExistError
+		} else {
+			return nil, err
 		}
 	}
 
 	return &user, nil
 }
 
-func UpdateUser(id string, updatedUser *User) (user *User, err error) {
+func UpdateUser(id string, updatedUser *User) (*User, error) {
 
 	for i, val := range UserStore {
 		if val.UUID == id {
 			if updatedUser.EmailAddress == "" {
-				return user, errEmptyEmailError
+				return nil, errEmptyEmailError
 			} else if updatedUser.FirstName == "" {
-				return user, errEmptyFirstNameError
+				return nil, errEmptyFirstNameError
 			}
 			updatedUser.UUID = id
 			UserStore[i] = updatedUser
-			return updatedUser, err
+			return updatedUser, nil
 		}
 	}
 
-	return user, errUserDoesNotExistError
+	fields := ``
+
+	fields += `"Email" = '` + updatedUser.EmailAddress + `', `
+	fields += `"FirstName" = '` + updatedUser.FirstName + `', `
+	fields += `"LastName" = '` + updatedUser.LastName + `', `
+	if updatedUser.DOB != "" {
+		fields += `"DateOfBirth" = '` + updatedUser.DOB + `', `
+	}
+	fields += `"PhoneNumber" = '` + updatedUser.PhoneNumber + `' `
+
+	query := `UPDATE ` + UserTableName + ` SET ` + fields + ` WHERE "UUID" = '` + id + `' returning *;`
+
+	rows := db.QueryRow(query)
+
+	var user User
+	var lastName sql.NullString
+	var dateOfBirth sql.NullTime
+	var phoneNumber sql.NullString
+
+	err := rows.Scan(&user.UUID, &user.EmailAddress, &user.FirstName, &lastName, &dateOfBirth, &phoneNumber)
+
+	if lastName.Valid {
+		user.LastName = lastName.String
+	}
+	if dateOfBirth.Valid {
+		user.DOB = dateOfBirth.Time.String()
+	}
+	if phoneNumber.Valid {
+		user.PhoneNumber = phoneNumber.String
+	}
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errUserDoesNotExistError
+		} else {
+			return nil, err
+		}
+	}
+
+	return &user, nil
 }
 
 func ListUsers() ([]*User, error) {
@@ -178,13 +221,22 @@ func ListUsers() ([]*User, error) {
 	return users, nil
 }
 
-func DeleteUser(id string) (err error) {
+func DeleteUser(id string) error {
 	for i, val := range UserStore {
 		if val.UUID == id {
 			UserStore[i] = UserStore[len(UserStore)-1]
 			UserStore = UserStore[:len(UserStore)-1]
-			return err
+			return nil
 		}
 	}
-	return errUserDoesNotExistError
+
+	query := `DELETE FROM ` + UserTableName + ` WHERE "UUID" = '` + id + `'`
+
+	_, err := db.Query(query)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
