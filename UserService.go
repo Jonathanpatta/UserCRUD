@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/google/uuid"
 )
@@ -39,11 +40,59 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 	myuser.PhoneNumber = phoneNumber
 	myuser.DOB = dob
 
-	fields, values := GetFieldsAndValues(&myuser)
+	fields, values := ``, ``
+
+	var args []interface{}
+	nargs := 1
+	if myuser.UUID != "" {
+		fields += `"UUID"`
+		values += `$` + strconv.Itoa(nargs) + `::text`
+		args = append(args, myuser.UUID)
+		nargs++
+
+	}
+	if myuser.EmailAddress != "" {
+		fields += `, "Email"`
+		values += `, $` + strconv.Itoa(nargs) + `::text`
+		args = append(args, myuser.EmailAddress)
+		nargs++
+
+	}
+	if myuser.FirstName != "" {
+		fields += `, "FirstName"`
+		values += `, $` + strconv.Itoa(nargs) + `::text`
+		args = append(args, myuser.FirstName)
+		nargs++
+	}
+
+	if myuser.LastName != "" {
+		fields += `, "LastName"`
+		values += `, $` + strconv.Itoa(nargs) + `::text`
+		args = append(args, myuser.LastName)
+		nargs++
+
+	}
+	if myuser.PhoneNumber != "" {
+		fields += `, "PhoneNumber"`
+		values += `, $` + strconv.Itoa(nargs) + `::text`
+		args = append(args, myuser.PhoneNumber)
+		nargs++
+
+	}
+
+	if myuser.DOB != "" {
+		fields += `, "DateOfBirth"`
+		values += `, $` + strconv.Itoa(nargs) + `::date`
+		args = append(args, myuser.DOB)
+		nargs++
+
+	}
+
+	fields, values = ` (`+fields+`) `, ` (`+values+` ) `
 
 	query := `INSERT INTO ` + UserTableName + fields + `VALUES` + values + ` returning *;`
 
-	rows := db.QueryRow(query)
+	rows := db.QueryRow(query, args...)
 
 	var user User
 	var lastName_ sql.NullString
@@ -75,9 +124,9 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 
 func GetUser(id string) (*User, error) {
 
-	query := `SELECT * from ` + UserTableName + ` WHERE "UUID" = ` + `'` + id + `'`
+	query := `SELECT * from ` + UserTableName + ` WHERE "UUID" = ` + `$1`
 
-	result := db.QueryRow(query)
+	result := db.QueryRow(query, id)
 
 	var user User
 	var lastName sql.NullString
@@ -109,19 +158,32 @@ func GetUser(id string) (*User, error) {
 
 func UpdateUser(id string, updatedUser *User) (*User, error) {
 
-	fields := ``
-
-	fields += `"Email" = '` + updatedUser.EmailAddress + `', `
-	fields += `"FirstName" = '` + updatedUser.FirstName + `', `
-	fields += `"LastName" = '` + updatedUser.LastName + `', `
-	if updatedUser.DOB != "" {
-		fields += `"DateOfBirth" = '` + updatedUser.DOB + `', `
+	if updatedUser.EmailAddress == "" {
+		return nil, errEmptyEmailError
+	} else if updatedUser.FirstName == "" {
+		return nil, errEmptyFirstNameError
 	}
-	fields += `"PhoneNumber" = '` + updatedUser.PhoneNumber + `' `
 
-	query := `UPDATE ` + UserTableName + ` SET ` + fields + ` WHERE "UUID" = '` + id + `' returning *;`
+	fields := ``
+	var args []interface{}
 
-	rows := db.QueryRow(query)
+	args = append(args, updatedUser.EmailAddress, updatedUser.FirstName, updatedUser.LastName, updatedUser.PhoneNumber)
+
+	fields += `"Email" = $1::text, `
+	fields += `"FirstName" = $2::text, `
+	fields += `"LastName" = $3::text, `
+	fields += `"PhoneNumber" = $4::text `
+	nargs := 5
+	if updatedUser.DOB != "" {
+		fields += `, "DateOfBirth" = $5::date `
+		args = append(args, updatedUser.DOB)
+		nargs++
+	}
+	args = append(args, id)
+
+	query := `UPDATE ` + UserTableName + ` SET ` + fields + ` WHERE "UUID" = $` + strconv.Itoa(nargs) + ` returning *;`
+
+	rows := db.QueryRow(query, args...)
 
 	var user User
 	var lastName sql.NullString
@@ -198,9 +260,9 @@ func ListUsers() ([]*User, error) {
 
 func DeleteUser(id string) error {
 
-	query := `DELETE FROM ` + UserTableName + ` WHERE "UUID" = '` + id + `'`
+	query := `DELETE FROM ` + UserTableName + ` WHERE "UUID" = $1`
 
-	_, err := db.Query(query)
+	_, err := db.Query(query, id)
 
 	if err != nil {
 		return err

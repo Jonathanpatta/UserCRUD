@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -11,14 +10,12 @@ func TestUserCreate(t *testing.T) {
 	if err != errEmptyEmailError {
 		t.Errorf("")
 	}
-	_, err = CreateUser("asdfsdfsdf", "", "", "", "")
+	_, err = CreateUser("Test-firstname", "", "", "", "")
 	if err != errEmptyFirstNameError {
 		t.Errorf("")
 	}
 
-	_, err = CreateUser("asdfsdfsdf", "asdfasdf", "", "", "")
-
-	fmt.Println("hello")
+	_, err = CreateUser("Test-firstName-2", "asdfasdf", "", "", "")
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -26,12 +23,12 @@ func TestUserCreate(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
 	// DBConnect()
-	user, createError := CreateUser("asdfasdf", "asdfasdfsadf", "asdfasdfasdf", "asdfasdf", "")
+	user, createError := CreateUser("Test-email1", "fname1", "asdfasdfasdf", "asdfasdf", "")
 	if createError != nil {
 		t.Errorf("User Creation error")
 	}
 
-	normalUser := User{EmailAddress: "asdfasdf", FirstName: "sadfasdf", PhoneNumber: "asdfoasdfjoasdf"}
+	normalUser := User{EmailAddress: "Test-email2", FirstName: "fname2", PhoneNumber: "asdfoasdfjoasdf"}
 
 	_, err := UpdateUser(user.UUID, &normalUser)
 	if err != nil {
