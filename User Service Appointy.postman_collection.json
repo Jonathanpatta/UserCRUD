@@ -18,24 +18,34 @@
 					"urlencoded": [
 						{
 							"key": "email",
-							"value": "asdf.patta@gmail.com",
+							"value": "bill.phil@gmail.com",
 							"type": "text"
 						},
 						{
 							"key": "firstname",
-							"value": "asdf",
+							"value": "bill",
+							"type": "text"
+						},
+						{
+							"key": "lastname",
+							"value": "phil",
+							"type": "text"
+						},
+						{
+							"key": "dob",
+							"value": "2018-01-20",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "localhost:8080/user",
+					"raw": "localhost:8080/users",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"user"
+						"users"
 					]
 				}
 			},
@@ -54,21 +64,14 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "localhost:8080/user/0aa87d00-4981-4e30-be3b-4ace7d4115a5",
+					"raw": "localhost:8080/users/tmgsK50iVuKziGYj0tCRaQgH3cjzc8GBB22O",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"user",
-						"0aa87d00-4981-4e30-be3b-4ace7d4115a5"
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "fd027ad2-faab-4466-af60-ebafda0c92e8",
-							"disabled": true
-						}
+						"users",
+						"tmgsK50iVuKziGYj0tCRaQgH3cjzc8GBB22O"
 					]
 				}
 			},
@@ -103,31 +106,35 @@
 					"urlencoded": [
 						{
 							"key": "email",
-							"value": "jonathan.patta@gmail.com",
+							"value": "postman.patta@gmail.com",
 							"type": "text"
 						},
 						{
 							"key": "firstname",
-							"value": "Jonathan",
+							"value": "post",
 							"type": "text"
 						},
 						{
 							"key": "lastname",
 							"value": "Patta",
 							"type": "text"
+						},
+						{
+							"key": "phonenumber",
+							"value": "1234123412",
+							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "localhost:8080/user/0aa87d00-4981-4e30-be3b-4ace7d4115a5/",
+					"raw": "localhost:8080/users/tmgsK50iVuKziGYj0tCRaQgH3cjzc8GBB22O",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"user",
-						"0aa87d00-4981-4e30-be3b-4ace7d4115a5",
-						""
+						"users",
+						"tmgsK50iVuKziGYj0tCRaQgH3cjzc8GBB22O"
 					]
 				}
 			},
@@ -143,14 +150,14 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "localhost:8080/user/e9b384e4-652e-4125-988c-ec2809e25598",
+					"raw": "localhost:8080/users/c87d174d-681e-4215-b631-e3118a6fd20a",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"user",
-						"e9b384e4-652e-4125-988c-ec2809e25598"
+						"users",
+						"c87d174d-681e-4215-b631-e3118a6fd20a"
 					],
 					"query": [
 						{
