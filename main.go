@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
-	"time"
 )
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
 
 	DBConnect()
 	router := NewRouter()

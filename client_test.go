@@ -125,7 +125,7 @@ func TestClientUpdateUser(t *testing.T) {
 	data.Set("email", user.EmailAddress)
 	data.Set("firstname", user.FirstName)
 	data.Set("LastName", user.LastName)
-	data.Set("DOB", user.DOB)
+	data.Set("DOB", user.DOB.String())
 	data.Set("PhoneNumber", user.PhoneNumber)
 	data.Set("UUID", user.UUID)
 

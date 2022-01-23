@@ -2,20 +2,22 @@ package main
 
 import (
 	"testing"
+	"time"
 )
 
 func TestUserCreate(t *testing.T) {
 	DBConnect()
-	_, err := CreateUser("", "", "", "", "")
+
+	_, err := CreateUser("", "", "", "", time.Time{})
 	if err != ErrEmptyEmail {
 		t.Errorf("")
 	}
-	_, err = CreateUser("Test-firstname", "", "", "", "")
+	_, err = CreateUser("Test-firstname", "", "", "", time.Time{})
 	if err != ErrEmptyFirstName {
 		t.Errorf("")
 	}
 
-	_, err = CreateUser("Test-firstName-2", "asdfasdf", "", "", "")
+	_, err = CreateUser("Test-firstName-2", "asdfasdf", "", "", time.Time{})
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -23,7 +25,7 @@ func TestUserCreate(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
 	// DBConnect()
-	user, createError := CreateUser("Test-email1", "fname1", "asdfasdfasdf", "asdfasdf", "")
+	user, createError := CreateUser("Test-email1", "fname1", "asdfasdfasdf", "asdfasdf", time.Time{})
 	if createError != nil {
 		t.Errorf("User Creation error")
 	}
@@ -38,7 +40,7 @@ func TestUpdateUser(t *testing.T) {
 
 func TestGetUser(t *testing.T) {
 	// DBConnect()
-	user, createError := CreateUser("asdfsadf", "asdfasdf", "asdf", "0", "")
+	user, createError := CreateUser("asdfsadf", "asdfasdf", "asdf", "0", time.Time{})
 	if createError != nil {
 		t.Errorf("User Creation error")
 	}
@@ -59,7 +61,7 @@ func TestListUser(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	// DBConnect()
-	user, createError := CreateUser("asdfs", "asdf", "asdf", "", "")
+	user, createError := CreateUser("asdfs", "asdf", "asdf", "", time.Time{})
 	if createError != nil {
 		t.Errorf("User Creation error")
 	}

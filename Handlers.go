@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 func PingHandler() func(rw http.ResponseWriter, r *http.Request) {
@@ -23,7 +24,18 @@ func CreateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 		phoneNumber := r.Form.Get("phonenumber")
 		dateOfBirth := r.Form.Get("dob")
 
-		user, err := CreateUser(email, firstName, lastName, phoneNumber, dateOfBirth)
+		parsedDob := time.Time{}
+
+		if dateOfBirth != "" {
+			parsedDob_, err := time.Parse("2006-01-02", dateOfBirth)
+			if err != nil {
+				http.Error(rw, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			parsedDob = parsedDob_
+		}
+
+		user, err := CreateUser(email, firstName, lastName, phoneNumber, parsedDob)
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
@@ -78,7 +90,18 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[str
 
 		id := m["id"]
 
-		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: dateOfBirth})
+		parsedDob := time.Time{}
+
+		if dateOfBirth != "" {
+			parsedDob_, err := time.Parse(time.RFC3339, dateOfBirth)
+			if err != nil {
+				http.Error(rw, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			parsedDob = parsedDob_
+		}
+
+		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: parsedDob})
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return

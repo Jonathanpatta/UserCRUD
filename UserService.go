@@ -6,15 +6,16 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 type User struct {
-	EmailAddress string `json:"emailaddress,omitempty"`
-	FirstName    string `json:"firstname,omitempty"`
-	LastName     string `json:"lastname,omitempty"`
-	PhoneNumber  string `json:"phonenumber,omitempty"`
-	DOB          string `json:"dob,omitempty"`
-	UUID         string `json:"UUID,omitempty"`
+	EmailAddress string    `json:"emailaddress,omitempty"`
+	FirstName    string    `json:"firstname,omitempty"`
+	LastName     string    `json:"lastname,omitempty"`
+	PhoneNumber  string    `json:"phonenumber,omitempty"`
+	DOB          time.Time `json:"dob,omitempty"`
+	UUID         string    `json:"UUID,omitempty"`
 }
 
 var ErrEmptyEmail = errors.New("email address cannot be empty")
@@ -24,6 +25,7 @@ var ErrUserDoesNotExist = errors.New("user does not exist")
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
 func randSeq(n int) string {
+	rand.Seed(time.Now().UnixNano())
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
@@ -31,7 +33,7 @@ func randSeq(n int) string {
 	return string(b)
 }
 
-func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob string) (*User, error) {
+func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob time.Time) (*User, error) {
 	if emailAddr == "" {
 		return nil, ErrEmptyEmail
 	} else if firstName == "" {
@@ -87,10 +89,10 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 
 	}
 
-	if myuser.DOB != "" {
+	if !myuser.DOB.IsZero() {
 		fields += `, "DateOfBirth"`
 		values += `, $` + strconv.Itoa(nargs) + `::date`
-		args = append(args, myuser.DOB)
+		args = append(args, myuser.DOB.Format("2006-01-02"))
 		nargs++
 
 	}
@@ -112,7 +114,7 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 		user.LastName = lastName_.String
 	}
 	if dateOfBirth.Valid {
-		user.DOB = dateOfBirth.Time.String()
+		user.DOB = dateOfBirth.Time
 	}
 	if phoneNumber_.Valid {
 		user.PhoneNumber = phoneNumber_.String
@@ -146,7 +148,7 @@ func GetUser(id string) (*User, error) {
 		user.LastName = lastName.String
 	}
 	if dateOfBirth.Valid {
-		user.DOB = dateOfBirth.Time.String()
+		user.DOB = dateOfBirth.Time
 	}
 	if phoneNumber.Valid {
 		user.PhoneNumber = phoneNumber.String
@@ -181,9 +183,9 @@ func UpdateUser(id string, updatedUser *User) (*User, error) {
 	fields += `"LastName" = $3::text, `
 	fields += `"PhoneNumber" = $4::text `
 	nargs := 5
-	if updatedUser.DOB != "" {
+	if !updatedUser.DOB.IsZero() {
 		fields += `, "DateOfBirth" = $5::date `
-		args = append(args, updatedUser.DOB)
+		args = append(args, updatedUser.DOB.Format("2006-01-02"))
 		nargs++
 	}
 	args = append(args, id)
@@ -203,7 +205,7 @@ func UpdateUser(id string, updatedUser *User) (*User, error) {
 		user.LastName = lastName.String
 	}
 	if dateOfBirth.Valid {
-		user.DOB = dateOfBirth.Time.String()
+		user.DOB = dateOfBirth.Time
 	}
 	if phoneNumber.Valid {
 		user.PhoneNumber = phoneNumber.String
@@ -252,7 +254,7 @@ func ListUsers() ([]*User, error) {
 			user.LastName = lastName.String
 		}
 		if dateOfBirth.Valid {
-			user.DOB = dateOfBirth.Time.String()
+			user.DOB = dateOfBirth.Time
 		}
 		if phoneNumber.Valid {
 			user.PhoneNumber = phoneNumber.String
