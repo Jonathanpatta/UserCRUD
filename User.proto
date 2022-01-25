@@ -4,18 +4,37 @@ package user;
 option go_package = "user/";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 service UserService{
     rpc CreateUser (User) returns (User){}
+    rpc UpdateUser (UpdateUserInput) returns (User){}
+    rpc GetUser (IdInput) returns (User){}
+    rpc DeleteUser (IdInput) returns (google.protobuf.Empty){}
+    rpc ListUsers (google.protobuf.Empty) returns (ListUserOutput){}
 
+
+}
+
+message IdInput {
+    string id = 1;
+}
+
+message UpdateUserInput {
+    string id = 1;
+    User user = 2;
+}
+
+message ListUserOutput {
+    repeated User users = 1;
 }
 
 message User {
     
-    string EmailAddress = 1;
-    string FirstName = 2;
-    string LastName = 3;
-    string PhoneNumber = 4;
-    google.protobuf.Timestamp DOB = 5;
-    string UUID = 6;
+    string UUID = 1;
+    string EmailAddress = 2;
+    string FirstName = 3;
+    string LastName = 4;
+    string PhoneNumber = 5;
+    google.protobuf.Timestamp DOB = 6;
 }
