@@ -7,16 +7,18 @@ import (
 	"math/rand"
 	"strconv"
 	"time"
+
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type User struct {
-	EmailAddress string    `json:"emailaddress,omitempty"`
-	FirstName    string    `json:"firstname,omitempty"`
-	LastName     string    `json:"lastname,omitempty"`
-	PhoneNumber  string    `json:"phonenumber,omitempty"`
-	DOB          time.Time `json:"dob,omitempty"`
-	UUID         string    `json:"UUID,omitempty"`
-}
+// type User struct {
+// 	EmailAddress string    `json:"emailaddress,omitempty"`
+// 	FirstName    string    `json:"firstname,omitempty"`
+// 	LastName     string    `json:"lastname,omitempty"`
+// 	PhoneNumber  string    `json:"phonenumber,omitempty"`
+// 	DOB          time.Time `json:"dob,omitempty"`
+// 	UUID         string    `json:"UUID,omitempty"`
+// }
 
 var ErrEmptyEmail = errors.New("email address cannot be empty")
 var ErrEmptyFirstName = errors.New("first name cannot be empty")
@@ -47,7 +49,8 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 	myuser.FirstName = firstName
 	myuser.LastName = lastName
 	myuser.PhoneNumber = phoneNumber
-	myuser.DOB = dob
+	time := timestamppb.New(dob)
+	myuser.DOB = time
 
 	fields, values := ``, ``
 
@@ -89,10 +92,10 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 
 	}
 
-	if !myuser.DOB.IsZero() {
+	if !myuser.DOB.AsTime().IsZero() {
 		fields += `, "DateOfBirth"`
 		values += `, $` + strconv.Itoa(nargs) + `::date`
-		args = append(args, myuser.DOB.Format("2006-01-02"))
+		args = append(args, myuser.DOB.AsTime().Format("2006-01-02"))
 		nargs++
 
 	}
@@ -114,7 +117,7 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 		user.LastName = lastName_.String
 	}
 	if dateOfBirth.Valid {
-		user.DOB = dateOfBirth.Time
+		user.DOB = timestamppb.New(dateOfBirth.Time)
 	}
 	if phoneNumber_.Valid {
 		user.PhoneNumber = phoneNumber_.String
@@ -148,7 +151,7 @@ func GetUser(id string) (*User, error) {
 		user.LastName = lastName.String
 	}
 	if dateOfBirth.Valid {
-		user.DOB = dateOfBirth.Time
+		user.DOB = timestamppb.New(dateOfBirth.Time)
 	}
 	if phoneNumber.Valid {
 		user.PhoneNumber = phoneNumber.String
@@ -183,9 +186,9 @@ func UpdateUser(id string, updatedUser *User) (*User, error) {
 	fields += `"LastName" = $3::text, `
 	fields += `"PhoneNumber" = $4::text `
 	nargs := 5
-	if !updatedUser.DOB.IsZero() {
+	if !updatedUser.DOB.AsTime().IsZero() {
 		fields += `, "DateOfBirth" = $5::date `
-		args = append(args, updatedUser.DOB.Format("2006-01-02"))
+		args = append(args, updatedUser.DOB.AsTime().Format("2006-01-02"))
 		nargs++
 	}
 	args = append(args, id)
@@ -205,7 +208,7 @@ func UpdateUser(id string, updatedUser *User) (*User, error) {
 		user.LastName = lastName.String
 	}
 	if dateOfBirth.Valid {
-		user.DOB = dateOfBirth.Time
+		user.DOB = timestamppb.New(dateOfBirth.Time)
 	}
 	if phoneNumber.Valid {
 		user.PhoneNumber = phoneNumber.String
@@ -254,7 +257,7 @@ func ListUsers() ([]*User, error) {
 			user.LastName = lastName.String
 		}
 		if dateOfBirth.Valid {
-			user.DOB = dateOfBirth.Time
+			user.DOB = timestamppb.New(dateOfBirth.Time)
 		}
 		if phoneNumber.Valid {
 			user.PhoneNumber = phoneNumber.String

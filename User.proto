@@ -1,0 +1,16 @@
+syntax = "proto3";
+package main;
+
+option go_package = "/";
+
+import "google/protobuf/timestamp.proto";
+
+message User {
+    
+    string EmailAddress = 1;
+    string FirstName = 2;
+    string LastName = 3;
+    string PhoneNumber = 4;
+    google.protobuf.Timestamp DOB = 5;
+    string UUID = 6;
+}

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func PingHandler() func(rw http.ResponseWriter, r *http.Request) {
@@ -101,7 +103,7 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[str
 			parsedDob = parsedDob_
 		}
 
-		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: parsedDob})
+		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: timestamppb.New(parsedDob)})
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
