@@ -1,6 +1,7 @@
 package main
 
 import (
+	"UserCrud/user"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -62,7 +63,7 @@ func TestClientGetUser(t *testing.T) {
 		t.Errorf("Error while creating user:" + bodyData)
 	}
 
-	var user User
+	var user user.User
 
 	err = json.Unmarshal(body, &user)
 
@@ -109,7 +110,7 @@ func TestClientUpdateUser(t *testing.T) {
 		t.Errorf("Error while creating user:" + bodyData)
 	}
 
-	var user User
+	var user user.User
 
 	err = json.Unmarshal(body, &user)
 
@@ -171,7 +172,7 @@ func TestClientDeleteUser(t *testing.T) {
 		t.Errorf("Error while creating user:" + bodyData)
 	}
 
-	var user User
+	var user user.User
 
 	// err = json.NewDecoder(resp.Body).Decode(&user)
 	err = json.Unmarshal(body, &user)

@@ -1,9 +1,14 @@
 syntax = "proto3";
-package main;
+package user;
 
-option go_package = "/";
+option go_package = "user/";
 
 import "google/protobuf/timestamp.proto";
+
+service UserService{
+    rpc CreateUser (User) returns (User){}
+
+}
 
 message User {
     

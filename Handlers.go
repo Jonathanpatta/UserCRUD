@@ -1,6 +1,7 @@
 package main
 
 import (
+	"UserCrud/user"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -37,7 +38,7 @@ func CreateUserHandler() func(rw http.ResponseWriter, r *http.Request) {
 			parsedDob = parsedDob_
 		}
 
-		user, err := CreateUser(email, firstName, lastName, phoneNumber, parsedDob)
+		user, err := user.CreateUser(email, firstName, lastName, phoneNumber, parsedDob)
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
@@ -53,7 +54,7 @@ func GetUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[string
 		rw.Header().Set("Content-Type", "application/json")
 		id := m["id"]
 
-		user, err := GetUser(id)
+		user, err := user.GetUser(id)
 		if err != nil {
 
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
@@ -69,7 +70,7 @@ func GetUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[string
 func ListUsersHandler() func(rw http.ResponseWriter, r *http.Request) {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header().Set("Content-Type", "application/json")
-		users, err := ListUsers()
+		users, err := user.ListUsers()
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
@@ -103,7 +104,7 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[str
 			parsedDob = parsedDob_
 		}
 
-		user, err := UpdateUser(id, &User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: timestamppb.New(parsedDob)})
+		user, err := user.UpdateUser(id, &user.User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: timestamppb.New(parsedDob)})
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
@@ -120,7 +121,7 @@ func DeleteUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[str
 
 		id := m["id"]
 
-		err := DeleteUser(id)
+		err := user.DeleteUser(id)
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
