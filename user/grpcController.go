@@ -1,15 +1,16 @@
 package user
 
 import (
+	"UserCrud/pb"
 	"context"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 type Server struct {
-	UnimplementedUserServiceServer
+	pb.UnimplementedUserServiceServer
 }
 
-func (s *Server) CreateUser(ctx context.Context, in *User) (*User, error) {
+func (s *Server) CreateUser(ctx context.Context, in *pb.User) (*pb.User, error) {
 	user, err := CreateUser(in.EmailAddress, in.FirstName, in.LastName, in.PhoneNumber, in.DOB.AsTime())
 
 	if err != nil {
@@ -19,7 +20,7 @@ func (s *Server) CreateUser(ctx context.Context, in *User) (*User, error) {
 	return user, nil
 }
 
-func (s *Server) UpdateUser(ctx context.Context, in *UpdateUserInput) (*User, error) {
+func (s *Server) UpdateUser(ctx context.Context, in *pb.UpdateUserInput) (*pb.User, error) {
 	user, err := UpdateUser(in.Id, in.User)
 	if err != nil {
 		return nil, err
@@ -28,7 +29,7 @@ func (s *Server) UpdateUser(ctx context.Context, in *UpdateUserInput) (*User, er
 	return user, nil
 }
 
-func (s *Server) GetUser(ctx context.Context, in *IdInput) (*User, error) {
+func (s *Server) GetUser(ctx context.Context, in *pb.IdInput) (*pb.User, error) {
 	user, err := GetUser(in.Id)
 	if err != nil {
 		return nil, err
@@ -37,7 +38,7 @@ func (s *Server) GetUser(ctx context.Context, in *IdInput) (*User, error) {
 	return user, nil
 }
 
-func (s *Server) DeleteUser(ctx context.Context, in *IdInput) (*emptypb.Empty, error) {
+func (s *Server) DeleteUser(ctx context.Context, in *pb.IdInput) (*emptypb.Empty, error) {
 	err := DeleteUser(in.Id)
 	if err != nil {
 		return &emptypb.Empty{}, err
@@ -46,11 +47,11 @@ func (s *Server) DeleteUser(ctx context.Context, in *IdInput) (*emptypb.Empty, e
 	return &emptypb.Empty{}, nil
 }
 
-func (s *Server) ListUsers(ctx context.Context, e *emptypb.Empty) (*ListUserOutput, error) {
+func (s *Server) ListUsers(ctx context.Context, e *emptypb.Empty) (*pb.ListUserOutput, error) {
 	users, err := ListUsers()
 	if err != nil {
 		return nil, err
 	}
-	usersOutput := ListUserOutput{Users: users}
+	usersOutput := pb.ListUserOutput{Users: users}
 	return &usersOutput, nil
 }

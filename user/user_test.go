@@ -1,6 +1,7 @@
 package user
 
 import (
+	"UserCrud/pb"
 	"testing"
 	"time"
 )
@@ -30,7 +31,7 @@ func TestUpdateUser(t *testing.T) {
 		t.Errorf("User Creation error")
 	}
 
-	normalUser := User{EmailAddress: "Test-email2", FirstName: "fname2", PhoneNumber: "asdfoasdfjoasdf"}
+	normalUser := pb.User{EmailAddress: "Test-email2", FirstName: "fname2", PhoneNumber: "asdfoasdfjoasdf"}
 
 	_, err := UpdateUser(user.UUID, &normalUser)
 	if err != nil {

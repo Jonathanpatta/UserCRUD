@@ -1,6 +1,7 @@
 package user
 
 import (
+	"UserCrud/pb"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -35,7 +36,7 @@ func randSeq(n int) string {
 	return string(b)
 }
 
-func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob time.Time) (*User, error) {
+func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber string, dob time.Time) (*pb.User, error) {
 	if emailAddr == "" {
 		return nil, ErrEmptyEmail
 	} else if firstName == "" {
@@ -43,7 +44,7 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 	}
 	id := randSeq(36)
 
-	myuser := User{}
+	myuser := pb.User{}
 	myuser.UUID = id
 	myuser.EmailAddress = emailAddr
 	myuser.FirstName = firstName
@@ -106,7 +107,7 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 
 	rows := db.QueryRow(query, args...)
 
-	var user User
+	var user pb.User
 	var lastName_ sql.NullString
 	var dateOfBirth sql.NullTime
 	var phoneNumber_ sql.NullString
@@ -134,13 +135,13 @@ func CreateUser(emailAddr string, firstName string, lastName string, phoneNumber
 	return &user, err
 }
 
-func GetUser(id string) (*User, error) {
+func GetUser(id string) (*pb.User, error) {
 
 	query := `SELECT * from ` + UserTableName + ` WHERE "UUID" = ` + `$1`
 
 	result := db.QueryRow(query, id)
 
-	var user User
+	var user pb.User
 	var lastName sql.NullString
 	var dateOfBirth sql.NullTime
 	var phoneNumber sql.NullString
@@ -168,7 +169,7 @@ func GetUser(id string) (*User, error) {
 	return &user, nil
 }
 
-func UpdateUser(id string, updatedUser *User) (*User, error) {
+func UpdateUser(id string, updatedUser *pb.User) (*pb.User, error) {
 
 	if updatedUser.EmailAddress == "" {
 		return nil, ErrEmptyEmail
@@ -197,7 +198,7 @@ func UpdateUser(id string, updatedUser *User) (*User, error) {
 
 	rows := db.QueryRow(query, args...)
 
-	var user User
+	var user pb.User
 	var lastName sql.NullString
 	var dateOfBirth sql.NullTime
 	var phoneNumber sql.NullString
@@ -225,11 +226,11 @@ func UpdateUser(id string, updatedUser *User) (*User, error) {
 	return &user, nil
 }
 
-func ListUsers() ([]*User, error) {
+func ListUsers() ([]*pb.User, error) {
 
 	query := `SELECT * FROM ` + UserTableName
 
-	var users []*User
+	var users []*pb.User
 
 	result, err := db.Query(query)
 
@@ -242,7 +243,7 @@ func ListUsers() ([]*User, error) {
 	}
 
 	for result.Next() {
-		var user User
+		var user pb.User
 		var lastName sql.NullString
 		var dateOfBirth sql.NullTime
 		var phoneNumber sql.NullString

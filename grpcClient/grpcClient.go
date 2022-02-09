@@ -1,7 +1,7 @@
 package main
 
 import (
-	"UserCrud/user"
+	"UserCrud/pb"
 	"context"
 	"fmt"
 	"log"
@@ -18,17 +18,9 @@ func main() {
 	}
 	defer conn.Close()
 
-	client := user.NewUserServiceClient(conn)
+	client := pb.NewUserServiceClient(conn)
 
-	res, err := client.CreateUser(context.Background(), &user.User{EmailAddress: "jonaasdjf", FirstName: "jonathan"})
-
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(res)
-	}
-
-	res, err = client.GetUser(context.Background(), &user.IdInput{Id: "tmgsK50iVuKziGYj0tCRaQgH3cjzc8GBB22O"})
+	res, err := client.CreateUser(context.Background(), &pb.User{EmailAddress: "jonaasdjf", FirstName: "jonathan"})
 
 	if err != nil {
 		fmt.Println(err)
@@ -36,9 +28,17 @@ func main() {
 		fmt.Println(res)
 	}
 
-	updateInput := &user.UpdateUserInput{
+	res, err = client.GetUser(context.Background(), &pb.IdInput{Id: "tmgsK50iVuKziGYj0tCRaQgH3cjzc8GBB22O"})
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(res)
+	}
+
+	updateInput := &pb.UpdateUserInput{
 		Id: "tmgsK50iVuKziGYj0tCRaQgH3cjzc8GBB22O",
-		User: &user.User{
+		User: &pb.User{
 			EmailAddress: "jonaasdjf",
 			FirstName:    "jonathan",
 			PhoneNumber:  "1234567890",

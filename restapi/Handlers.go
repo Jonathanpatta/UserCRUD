@@ -1,6 +1,7 @@
 package restapi
 
 import (
+	"UserCrud/pb"
 	"UserCrud/user"
 	"encoding/json"
 	"fmt"
@@ -104,7 +105,7 @@ func UpdateUserHandler() func(rw http.ResponseWriter, r *http.Request, m map[str
 			parsedDob = parsedDob_
 		}
 
-		user, err := user.UpdateUser(id, &user.User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: timestamppb.New(parsedDob)})
+		user, err := user.UpdateUser(id, &pb.User{EmailAddress: email, FirstName: firstName, LastName: lastName, PhoneNumber: phoneNumber, DOB: timestamppb.New(parsedDob)})
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return

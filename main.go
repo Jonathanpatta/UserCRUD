@@ -1,7 +1,8 @@
 package main
 
 import (
-	// "UserCrud/restapi"
+	"UserCrud/pb"
+	"UserCrud/restapi"
 	"UserCrud/user"
 	"net"
 
@@ -15,7 +16,7 @@ func GRPCUserService() {
 		panic(err)
 	}
 	var userServer user.Server
-	user.RegisterUserServiceServer(server, &userServer)
+	pb.RegisterUserServiceServer(server, &userServer)
 	err = server.Serve(con)
 	if err != nil {
 		panic(err)
@@ -25,6 +26,6 @@ func GRPCUserService() {
 func main() {
 
 	user.DBConnect()
-	// restapi.RestUserService()
-	GRPCUserService()
+	restapi.RestUserService()
+	// GRPCUserService()
 }
